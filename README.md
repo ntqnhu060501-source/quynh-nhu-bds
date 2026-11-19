@@ -1,43 +1,49 @@
 # QUỲNH NHƯ BDS
 
-Nền tảng kinh doanh bất động sản Cam Lâm: website giới thiệu sản phẩm, tiếp nhận khách hàng, quản trị dữ liệu và các mô-đun AI.
+Nền tảng kinh doanh bất động sản Cam Lâm: website giới thiệu sản phẩm, tiếp nhận khách hàng và các mô-đun quản trị/AI theo từng giai đoạn.
 
-## Nguyên tắc
-- Ưu tiên chi phí vận hành 0 đồng ở giai đoạn đầu.
-- Không đăng thông tin lô đất, giá, pháp lý hoặc tiến độ nếu chưa được xác minh.
-- Dữ liệu khách hàng và thông tin nội bộ không đưa vào mã nguồn.
-- Xây từng giai đoạn, kiểm thử trước khi phát hành.
+## Nguyên tắc triển khai
+- Ưu tiên chi phí 0 đồng ở giai đoạn đầu; các dịch vụ có giới hạn miễn phí phải được kiểm tra trước khi dùng production.
+- Không đăng lô đất, giá, pháp lý hoặc tiến độ nếu chưa được xác minh.
+- Không đưa dữ liệu khách hàng, giấy tờ cá nhân, mật khẩu hoặc khóa bí mật vào Git.
+- Mỗi giai đoạn phải có kiểm thử và tiêu chí nghiệm thu.
 
-## Kiến trúc khởi đầu
-- `apps/web`: giao diện website responsive.
-- `apps/api`: REST API Python/FastAPI.
-- SQLite ở local; thiết kế để chuyển PostgreSQL khi triển khai nhiều người dùng.
-- AI là mô-đun tùy chọn; không phụ thuộc dịch vụ trả phí để website cơ bản hoạt động.
+## Kiến trúc hiện tại
+- `apps/web`: website thương hiệu responsive bằng HTML/CSS/JavaScript.
+- `apps/api`: REST API FastAPI.
+- SQLite: cơ sở dữ liệu local cho giai đoạn phát triển.
+- AI: mô-đun tùy chọn; website cơ bản không phụ thuộc AI.
 
-## Chạy local
+## Chạy API local
 Yêu cầu Python 3.11+.
 
 ```bash
 cd apps/api
 python -m venv .venv
-# Windows: .venv\Scripts\activate
+# Windows PowerShell: .venv\\Scripts\\Activate.ps1
 # macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 uvicorn app.main:app --reload
 ```
 
-Mở API docs tại http://127.0.0.1:8000/docs.
+- Health: http://127.0.0.1:8000/api/health
+- API docs: http://127.0.0.1:8000/docs
+- Danh sách sản phẩm đã duyệt: http://127.0.0.1:8000/api/properties
+- Kiểm thử: `pytest -q` trong `apps/api`.
 
-Website tĩnh hiện ở `apps/web/index.html`. Trong giai đoạn kế tiếp sẽ nối website với API, hoàn thiện quản trị, xác thực và quy trình triển khai.
+Xem [hướng dẫn chạy local](docs/LOCAL_DEVELOPMENT.md) và [kiến trúc](docs/ARCHITECTURE.md).
 
-## Trạng thái
-- [x] Repository và kiến trúc ban đầu.
-- [x] API nền: health check, danh sách bất động sản, tiếp nhận khách hàng.
-- [ ] Quản trị đăng nhập và CRUD đầy đủ.
-- [ ] CRM, phân quyền, nhật ký hoạt động.
-- [ ] Kho tri thức Cam Lâm có trích dẫn nguồn.
-- [ ] AI Creative Studio.
-- [ ] Bản đồ, lưu trữ ảnh/tài liệu và triển khai production.
+## Trạng thái đã xác minh trong mã nguồn
+- [x] Website giới thiệu thương hiệu.
+- [x] API health check.
+- [x] API công khai chỉ trả sản phẩm có trạng thái `published`.
+- [x] API tiếp nhận khách hàng, yêu cầu đồng ý liên hệ.
+- [x] Kiểm thử khói cho health, danh mục và consent.
+- [ ] Admin đăng nhập, CRUD bất động sản và xác thực an toàn.
+- [ ] CRM giao diện, lịch sử chăm sóc, phân quyền và audit log.
+- [ ] Kho tri thức Cam Lâm có trích dẫn tài liệu.
+- [ ] AI Creative Studio và quy trình sản xuất nội dung.
+- [ ] Bản đồ, lưu trữ media, backup và triển khai production.
 
-## Bảo mật
-Không commit `.env`, database, token, mật khẩu, dữ liệu khách hàng hoặc giấy tờ pháp lý cá nhân. Xem `.env.example`.
+## Giới hạn bảo mật
+Bản hiện tại chưa phải production. Chưa nhập dữ liệu khách hàng thật; chưa mở API lead ra Internet trước khi hoàn thiện xác thực, rate limit/chống spam, HTTPS, backup và quy trình bảo vệ dữ liệu.

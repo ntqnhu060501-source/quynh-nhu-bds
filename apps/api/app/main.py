@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
@@ -8,18 +9,21 @@ from typing import Iterator
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 
 BASE_DIR = Path(__file__).resolve().parents[1]
+WEB_DIR = BASE_DIR.parent / "web"
 DB_PATH = Path(os.getenv("DB_PATH", str(BASE_DIR / "quynh_nhu_bds.sqlite3")))
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
 @contextmanager
 def db() -> Iterator[sqlite3.Connection]:
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=10)
     conn.row_factory = sqlite3.Row
     try:
+        conn.execute("PRAGMA foreign_keys = ON")
         yield conn
         conn.commit()
     finally:
@@ -57,11 +61,13 @@ def init_db() -> None:
 
 app = FastAPI(
     title="Quỳnh Như BDS API",
-    version="0.1.0",
+    version="0.2.0",
     description="API nền tảng website và tiếp nhận khách hàng Quỳnh Như BDS.",
 )
 
-origins = [x.strip() for x in os.getenv("CORS_ORIGINS", "http://127.0.0.1:8000,http://localhost:8000").split(",") if x.strip()]
+origins = [x.strip() for x in os.getenv(
+    "CORS_ORIGINS", "http://127.0.0.1:8000,http://localhost:8000"
+).split(",") if x.strip()]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -78,11 +84,16 @@ class LeadIn(BaseModel):
     source: str = Field(default="website", max_length=100)
     consent: bool
 
+    @field_validator("name", "need", "source")
+    @classmethod
+    def strip_text(cls, value: str) -> str:
+        return value.strip()
+
     @field_validator("phone")
     @classmethod
     def validate_phone(cls, value: str) -> str:
         normalized = "".join(ch for ch in value if ch.isdigit() or ch == "+")
-        if len(normalized) < 9:
+        if len(normalized) < 9 or not re.fullmatch(r"\+?[0-9]+", normalized):
             raise ValueError("Số điện thoại chưa hợp lệ")
         return normalized
 
@@ -94,7 +105,7 @@ def startup() -> None:
 
 @app.get("/api/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "service": "quynh-nhu-bds-api", "version": "0.1.0"}
+    return {"status": "ok", "service": "quynh-nhu-bds-api", "version": "0.2.0"}
 
 
 @app.get("/api/properties")
@@ -117,6 +128,12 @@ def create_lead(payload: LeadIn, request: Request) -> dict[str, str]:
         conn.execute(
             """INSERT INTO leads (name, phone, need, source, consent)
                VALUES (?, ?, ?, ?, ?)""",
-            (payload.name.strip(), payload.phone, payload.need.strip(), payload.source, 1),
+            (payload.name, payload.phone, payload.need, payload.source, 1),
         )
     return {"status": "received", "message": "Thông tin đã được tiếp nhận."}
+
+
+# Serve the real website and API from one origin in local deployment.
+# API routes above take precedence over this static catch-all.
+if WEB_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=WEB_DIR, html=True), name="website")
