@@ -1,7 +1,7 @@
 name: API checks
 on:
   push:
-    branches: [main, 'phase-*']
+    branches: [main, 'phase-1/**']
   pull_request:
     branches: [main]
 jobs:
