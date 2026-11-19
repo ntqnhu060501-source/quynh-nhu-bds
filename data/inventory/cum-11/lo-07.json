@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "property_code": "CUM11-LO07",
+  "title": "Đất Cụm 11 – Lô 7, Khánh Thành Bắc, Suối Dầu",
+  "cluster": "Cụm 11",
+  "lot_number": "7",
+  "status": "available",
+  "publication_status": "draft",
+  "price_vnd": 770000000,
+  "price_display": "770 triệu đồng",
+  "negotiable": true,
+  "area_m2": 102.6,
+  "location": {
+    "hamlet": "Khánh Thành Bắc",
+    "commune_as_shown_on_certificate": "Suối Dầu",
+    "province": "Khánh Hòa"
+  },
+  "cadastral": {
+    "parcel_number": "1086",
+    "map_sheet_number": "6",
+    "land_use": [
+      {
+        "type": "Đất ở tại nông thôn",
+        "area_m2": 79.3,
+        "term": "Lâu dài"
+      },
+      {
+        "type": "Đất trồng cây lâu năm",
+        "area_m2": 23.3,
+        "term": "Đến 01/01/2047"
+      }
+    ],
+    "use_form": "Sử dụng chung của vợ và chồng",
+    "certificate_status": "Người bán xác nhận đã kiểm tra bản gốc",
+    "source_note": "Thông tin được nhập theo ảnh giấy chứng nhận người dùng cung cấp; chưa thay thế việc kiểm tra hồ sơ tại cơ quan có thẩm quyền."
+  },
+  "dimensions_m": {
+    "edge_1": 5.6,
+    "edge_2": 13.85,
+    "edge_3": 4.3,
+    "edge_4": 5.6,
+    "edge_5": 4.03,
+    "edge_6": 14.5
+  },
+  "access": {
+    "existing_concrete_road_width_as_shown_m": "4.2–9",
+    "planned_road_width_as_shown_m": 13,
+    "note": "Chiều rộng quy hoạch là thông tin thể hiện trên sơ đồ người dùng gửi; cần đối chiếu quy hoạch hiện hành trước khi quảng cáo."
+  },
+  "media": {
+    "original_drone_photo": "pending_upload_to_media_storage",
+    "ground_photo": "pending_upload_to_media_storage",
+    "cadastral_certificate": "private_only_not_for_publication",
+    "parcel_diagram": "private_only_not_for_publication"
+  },
+  "created_from": "User-provided images and follow-up details in ChatGPT",
+  "last_updated": "2026-11-19",
+  "public_description": "Lô đất 102,6 m² tại khu vực Khánh Thành Bắc, Suối Dầu. Giá chào 770 triệu đồng, có thương lượng. Thông tin pháp lý và quy hoạch cần được đối chiếu tại thời điểm giao dịch.",
+  "internal_notes": [
+    "Người dùng xác nhận giá 770 triệu đồng, có thương lượng.",
+    "Người dùng xác nhận trạng thái đang bán.",
+    "Người dùng xác nhận đã kiểm tra bản gốc giấy chứng nhận.",
+    "Chưa đăng công khai: chờ duyệt nội dung, cập nhật ảnh gốc vào kho media và xác minh thông tin quy hoạch."
+  ]
+}
